@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Grade 2 Math Game</title>
+  <style>
+    body {
+      font-family: Comic Sans MS, Arial, sans-serif;
+      text-align: center;
+      background-color: #e6f7ff;
+      padding-top: 50px;
+    }
+    h1 {
+      color: #004080;
+    }
+    #question {
+      font-size: 28px;
+      margin: 20px;
+    }
+    input, button {
+      font-size: 20px;
+      padding: 8px;
+      margin: 10px;
+    }
+    #feedback {
+      font-size: 22px;
+      font-weight: bold;
+    }
+    #score {
+      font-size: 24px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎯 Grade 2 Math Challenge</h1>
+  <div id="question">Loading question...</div>
+
+  <input type="number" id="answerInput" placeholder="Your answer" />
+  <button onclick="checkAnswer()">Submit</button>
+
+  <p id="feedback"></p>
+  <p id="score"></p>
+
+  <script>
+    let questionCount = 0;
+    let score = 0;
+    let correctAnswer = 0;
+
+    function generateQuestion() {
+      if (questionCount >= 10) {
+        document.getElementById('score').textContent = `🎉 You got ${score} out of 10 correct! Starting new game...`;
+        setTimeout(() => {
+          score = 0;
+          questionCount = 0;
+          document.getElementById('score').textContent = "";
+          generateQuestion();
+        }, 4000);
+        return;
+      }
+
+      let num1 = Math.floor(Math.random() * 10) + 1;
+      let num2 = Math.floor(Math.random() * 10) + 1;
+      const operators = ['+', '-', '×', '÷'];
+      const operator = operators[Math.floor(Math.random() * 4)];
+      let questionText = "";
+
+      switch (operator) {
+        case '+':
+          correctAnswer = num1 + num2;
+          questionText = `${num1} + ${num2}`;
+          break;
+        case '-':
+          if (num1 < num2) [num1, num2] = [num2, num1]; // avoid negative answers
+          correctAnswer = num1 - num2;
+          questionText = `${num1} - ${num2}`;
+          break;
+        case '×':
+          correctAnswer = num1 * num2;
+          questionText = `${num1} × ${num2}`;
+          break;
+        case '÷':
+          correctAnswer = num1;
+          let dividend = num1 * num2;
+          questionText = `${dividend} ÷ ${num2}`;
+          break;
+      }
+
+      document.getElementById('question').textContent = `Q${questionCount + 1}: What is ${questionText}?`;
+      document.getElementById('answerInput').value = '';
+      document.getElementById('feedback').textContent = '';
+    }
+
+    function checkAnswer() {
+      const userAnswer = Number(document.getElementById('answerInput').value);
+      const feedback = document.getElementById('feedback');
+
+      if (userAnswer === correctAnswer) {
+        score++;
+        feedback.textContent = "✅ Correct!";
+        feedback.style.color = "green";
+      } else {
+        feedback.textContent = `❌ Wrong! The correct answer was ${correctAnswer}`;
+        feedback.style.color = "red";
+      }
+
+      questionCount++;
+      setTimeout(generateQuestion, 1500);
+    }
+
+    window.onload = generateQuestion;
+  </script>
+
+</body>
+</html>
